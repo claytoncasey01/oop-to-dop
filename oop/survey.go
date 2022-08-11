@@ -1,4 +1,4 @@
-package main
+package oop
 
 // Survey represents the basic stucture of a survey
 type Survey struct {
