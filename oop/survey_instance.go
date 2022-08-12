@@ -20,6 +20,19 @@ func NewSurveyInstance(id int, survey *Survey, sendDate time.Time) *SurveyInstan
 	}
 }
 
+// FindBySurveyId finds all survey instances with the matching survey id
+func FindBySurveyId(id int, surveyInstances []SurveyInstance) []SurveyInstance {
+	instances := make([]SurveyInstance, 10)
+
+	for _, s := range surveyInstances {
+		if id == s.SurveyId {
+			instances = append(instances, s)
+		}
+	}
+
+	return instances
+}
+
 func SendOrSchedule(instances []SurveyInstance, scheduled []SurveyInstance) []SurveyInstance {
 	for _, instance := range instances {
 		// Check if we are past the send date or right at

@@ -38,3 +38,14 @@ func NewQuestion(id int, questionType QuestionType, name, text string) *Question
 		Type: questionType,
 	}
 }
+
+// FindByType finds a question in the given slice by the given type. If no match, returns nil.
+func FindByType(questionType QuestionType, questions []Question) *Question {
+	for _, q := range questions {
+		if q.Type == questionType {
+			return &q
+		}
+	}
+
+	return nil
+}

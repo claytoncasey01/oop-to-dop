@@ -33,3 +33,15 @@ func Send(sent *[]bool) {
 		(*sent)[i] = true
 	}
 }
+
+func (s *SurveyInstances) FindBySurveyId(id int) []int {
+	found := make([]int, 10)
+
+	for i := range s.SurveyIds {
+		if s.SurveyIds[i] == id {
+			found = append(found, i)
+		}
+	}
+
+	return found
+}
