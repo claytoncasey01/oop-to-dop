@@ -1,9 +1,8 @@
 package dop
 
 import (
-	"time"
-
 	"github.com/google/uuid"
+	"time"
 )
 
 type Posts struct {
@@ -24,12 +23,12 @@ func (p *Posts) Add(title, body string, authorId uuid.UUID, authors *Authors) {
 	p.UpdateAts = append(p.UpdateAts, time.Now())
 }
 
-// FindById returns the index of the survey if found
 type FindPostByIdInput struct {
 	Ids []uuid.UUID
 	Id  uuid.UUID
 }
 
+// FindPostById returns the index of the survey if found
 func FindPostById(input FindPostByIdInput) int {
 	for i := range input.Ids {
 		if input.Ids[i] == input.Id {
@@ -40,11 +39,17 @@ func FindPostById(input FindPostByIdInput) int {
 	return -1
 }
 
-func (p *Posts) FindByIds(ids []uuid.UUID) []int {
+type FindPostsByIdsInput struct {
+	PostIds []uuid.UUID
+	Ids     []uuid.UUID
+}
+
+// FindPostsByIds takes a slice of ids and posts, then finds all posts by the matching ids or an empty slice
+func FindPostsByIds(input FindPostsByIdsInput) []int {
 	var posts []int
 
-	for i, id := range ids {
-		if p.Ids[i] == id {
+	for i, id := range input.Ids {
+		if input.PostIds[i] == id {
 			posts = append(posts, i)
 		}
 	}
@@ -52,10 +57,15 @@ func (p *Posts) FindByIds(ids []uuid.UUID) []int {
 	return posts
 }
 
-// FindByTitle returns the index of the survey if found
-func (p *Posts) FindByTitle(title string) int {
-	for i := range p.Titles {
-		if p.Titles[i] == title {
+type FindPostByTitleInput struct {
+	PostTitles []string
+	Title      string
+}
+
+// FindPostByTitle returns the index of the survey if found
+func FindPostByTitle(input FindPostByTitleInput) int {
+	for i := range input.PostTitles {
+		if input.PostTitles[i] == input.Title {
 			return i
 		}
 	}
@@ -63,27 +73,12 @@ func (p *Posts) FindByTitle(title string) int {
 	return -1
 }
 
-// FindByAuthorName returns the indexes of a posts by the given author or empty slice if none are found
-// TODO: Improve this
-func (p *Posts) FindByAuthorName(name string, authors *Authors) []int {
-	authorIdx := authors.FindByName(name)
-	var posts []int
-
-	for i, author := range p.Authors {
-		if author == authorIdx {
-			posts = append(posts, i)
-		}
-	}
-
-	return posts
-}
-
-type PostsByAuthorName struct {
+type PostsByAuthorNameInput struct {
 	name        string
 	authorNames []string
 }
 
-func FindPostsByAuthorName(input PostsByAuthorName) []int {
+func FindPostsByAuthorName(input PostsByAuthorNameInput) []int {
 	var posts []int
 
 	for i, name := range input.authorNames {
@@ -99,15 +94,45 @@ func (p *Posts) Update() {
 	// TODO: Implement Update
 }
 
-// Publish Publishes posts for the given uuids
-func (p *Posts) Publish(ids []uuid.UUID) {
-	idxs := p.FindByIds(ids)
+type PublishPostInput struct {
+	Ids           []uuid.UUID
+	PostIds       []uuid.UUID
+	PostPublished []bool
+	PostUpdatedAt []time.Time
+}
+
+// PublishPost Publishes posts for the given uuids
+// TODO: May need to modify this to return a set of new arrays or do an update
+func PublishPost(input PublishPostInput) {
+	idxs := FindPostsByIds(FindPostsByIdsInput{Ids: input.Ids, PostIds: input.PostIds})
 
 	for _, idx := range idxs {
-		if p.Published[idx] {
+		if input.PostPublished[idx] {
 			continue
 		}
-		p.UpdateAts[idx] = time.Now()
-		p.Published[idx] = true
+		input.PostUpdatedAt[idx] = time.Now()
+		input.PostPublished[idx] = true
+	}
+}
+
+type UpdatePostsInput struct {
+	PostIdsToUpdate []uuid.UUID
+	Titles          []string
+	Bodies          []string
+	Posts           *Posts
+}
+
+// UpdatePosts Updates any posts with matching ids with the given data.
+func UpdatePosts(input UpdatePostsInput) {
+	idxs := FindPostsByIds(FindPostsByIdsInput{Ids: input.PostIdsToUpdate, PostIds: input.PostIdsToUpdate})
+	for i, idx := range idxs {
+		if input.Titles != nil {
+			input.Posts.Titles[idx] = input.Titles[i]
+		}
+		if input.Bodies != nil {
+			input.Posts.Bodies[idx] = input.Bodies[i]
+		}
+
+		input.Posts.UpdateAts[idx] = time.Now()
 	}
 }
