@@ -1,7 +1,7 @@
-# Object Oriented Programming to Data Oriented Design 
+# Object Oriented Programming to Data Oriented Programming
 
 ## Description
-After seeing many talks on Data Oriented Design but few examples on how to actually get started with it I decided to make this repo. The goal is to provide easy to digest examples in OOP as well as DOD. 
+After seeing many talks on Data Oriented Programming but few examples on how to actually get started with it I decided to make this repo. The goal is to provide easy to digest examples in OOP as well as DOP. 
 
 ### Running
 ##### Benchmarks and Tests (Go )

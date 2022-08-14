@@ -1,4 +1,4 @@
-module github.com/claytoncasey01/oop-to-dod
+module github.com/claytoncasey01/oop-to-dop
 
 go 1.19
 

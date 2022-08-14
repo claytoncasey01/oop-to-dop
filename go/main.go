@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/claytoncasey01/oop-to-dod/dod"
-	"github.com/claytoncasey01/oop-to-dod/oop"
+	"github.com/claytoncasey01/oop-to-dop/dop"
+	"github.com/claytoncasey01/oop-to-dop/oop"
 	"strconv"
 )
 
@@ -11,8 +11,8 @@ func main() {
 	authors := oop.MakeAuthors(100)
 	posts := oop.MakePosts(10000, authors)
 
-	dodAuthors := dod.MakeAuthors(100)
-	dodPosts := dod.MakePosts(10000, dodAuthors)
+	dopAuthors := dop.MakeAuthors(100)
+	dopPosts := dop.MakePosts(10000, dopAuthors)
 
 	var command string
 	fmt.Print("Enter a command to run: ")
@@ -29,9 +29,9 @@ func main() {
 			for i := 0; i < parsedN; i++ {
 				oop.FindPostById(posts[0].Id, posts)
 			}
-		case "DodFindById":
+		case "dopFindById":
 			for i := 0; i < parsedN; i++ {
-				dodPosts.FindById(dodPosts.Ids[50])
+				dopPosts.FindById(dopPosts.Ids[50])
 				//fmt.Printf("Post Index: %d\n", postId)
 			}
 		case "OopFindByTitle":
@@ -47,8 +47,8 @@ func main() {
 		}
 	}
 
-	//dodSurveys := dod.MakeSurveys(10, 0)
-	//dodSurveyInstances := dod.MakeSurveyInstances(1000, dodSurveys.IDs)
-	//fmt.Printf("DodSurveys Length: %d\n", len(dodSurveyInstances.IDs))
+	//dopSurveys := dop.MakeSurveys(10, 0)
+	//dopSurveyInstances := dop.MakeSurveyInstances(1000, dopSurveys.IDs)
+	//fmt.Printf("dopSurveys Length: %d\n", len(dopSurveyInstances.IDs))
 
 }
