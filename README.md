@@ -12,4 +12,4 @@ After seeing many talks on Data Oriented Programming but few examples on how to 
 * Rust Examples
 * Zig Examples
 * C++ Examples
-* Others (Typescript, Java, C#)?
+* Others (Kotlin, Typescript, Java, C#)?
