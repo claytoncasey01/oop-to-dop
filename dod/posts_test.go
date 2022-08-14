@@ -35,6 +35,16 @@ func BenchmarkDodFindByAuthorName(b *testing.B) {
 	}
 }
 
+func BenchmarkDodFindPostsByAuthorName(b *testing.B) {
+	random := rand.New(rand.NewSource(time.Now().UnixNano()))
+	randomAuthorIdx := random.Intn(len(authors.Ids) - 1)
+	randomAuthor := authors.Names[randomAuthorIdx]
+
+	for i := 0; i < b.N; i++ {
+		FindPostsByAuthorName(PostsByAuthorName{name: randomAuthor, authorNames: authors.Names})
+	}
+}
+
 func BenchmarkDodPublishPosts(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		posts.Publish(posts.Ids)

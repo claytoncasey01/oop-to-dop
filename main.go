@@ -7,8 +7,9 @@ import (
 )
 
 func main() {
-	posts := oop.MakePosts(10)
-	found := oop.FindPostsByAuthorName("Casey", posts)
+	authors := oop.MakeAuthors(1)
+	posts := oop.MakePosts(10, authors)
+	found := oop.FindPostsByAuthorName("Author 0", posts)
 	fmt.Printf("Length of Oop Posts: %d\n", len(posts))
 	fmt.Printf("Found %d posts\n", len(found))
 

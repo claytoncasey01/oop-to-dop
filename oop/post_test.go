@@ -7,7 +7,8 @@ import (
 )
 
 var (
-	posts = MakePosts(10000)
+	authors = MakeAuthors(100)
+	posts   = MakePosts(10000, authors)
 )
 
 func BenchmarkOopFindPostById(b *testing.B) {

@@ -72,6 +72,23 @@ func (p *Posts) FindByAuthorName(name string, authors *Authors) []int {
 	return posts
 }
 
+type PostsByAuthorName struct {
+	name        string
+	authorNames []string
+}
+
+func FindPostsByAuthorName(input PostsByAuthorName) []int {
+	var posts []int
+
+	for i, name := range input.authorNames {
+		if name == input.name {
+			posts = append(posts, i)
+		}
+	}
+
+	return posts
+}
+
 func (p *Posts) Update() {
 	// TODO: Implement Update
 }

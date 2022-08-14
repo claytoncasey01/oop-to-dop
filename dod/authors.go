@@ -32,3 +32,18 @@ func (a *Authors) FindByName(name string) int {
 	}
 	return -1
 }
+
+type AuthorsByName struct {
+	name  string
+	names []string
+}
+
+func FindAuthorByName(findBy AuthorsByName) int {
+	for i := range findBy.names {
+		if findBy.names[i] == findBy.name {
+			return i
+		}
+	}
+
+	return -1
+}

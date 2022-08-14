@@ -69,11 +69,12 @@ func FindPostByTitle(title string, posts []Post) *Post {
 // FindPostsByAuthorName Takes a slice of posts and an author name, and returns all matching posts or empty slice if
 // none found
 func FindPostsByAuthorName(authorName string, posts []Post) []Post {
-	posts = []Post{}
+	var foundPosts []Post
+
 	for _, p := range posts {
 		if p.Author.Name == authorName {
-			posts = append(posts, p)
+			foundPosts = append(foundPosts, p)
 		}
 	}
-	return posts
+	return foundPosts
 }
