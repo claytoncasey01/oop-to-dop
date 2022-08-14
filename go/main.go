@@ -2,8 +2,8 @@ package main
 
 import (
 	"fmt"
-	"github.com/claytoncasey01/go-oop-to-dod/dod"
-	"github.com/claytoncasey01/go-oop-to-dod/oop"
+	"github.com/claytoncasey01/oop-to-dod/dod"
+	"github.com/claytoncasey01/oop-to-dod/oop"
 	"strconv"
 )
 
