@@ -14,9 +14,10 @@ var (
 func BenchmarkDodFindById(b *testing.B) {
 	random := rand.New(rand.NewSource(time.Now().UnixNano()))
 	randomPost := random.Intn(len(posts.Ids) - 1)
+	input := FindPostByIdInput{Ids: posts.Ids, Id: posts.Ids[randomPost]}
 
 	for i := 0; i < b.N; i++ {
-		posts.FindById(posts.Ids[randomPost])
+		FindPostById(input)
 	}
 }
 

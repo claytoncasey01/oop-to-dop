@@ -1,8 +1,9 @@
 package dop
 
 import (
-	"github.com/google/uuid"
 	"time"
+
+	"github.com/google/uuid"
 )
 
 type Posts struct {
@@ -24,9 +25,14 @@ func (p *Posts) Add(title, body string, authorId uuid.UUID, authors *Authors) {
 }
 
 // FindById returns the index of the survey if found
-func (p *Posts) FindById(id uuid.UUID) int {
-	for i := range p.Ids {
-		if p.Ids[i] == id {
+type FindPostByIdInput struct {
+	Ids []uuid.UUID
+	Id  uuid.UUID
+}
+
+func FindPostById(input FindPostByIdInput) int {
+	for i := range input.Ids {
+		if input.Ids[i] == input.Id {
 			return i
 		}
 	}

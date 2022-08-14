@@ -2,9 +2,10 @@ package main
 
 import (
 	"fmt"
+	"strconv"
+
 	"github.com/claytoncasey01/oop-to-dop/dop"
 	"github.com/claytoncasey01/oop-to-dop/oop"
-	"strconv"
 )
 
 func main() {
@@ -30,8 +31,9 @@ func main() {
 				oop.FindPostById(posts[0].Id, posts)
 			}
 		case "dopFindById":
+			input := dop.FindPostByIdInput{Ids: dopPosts.Ids, Id: dopPosts.Ids[50]}
 			for i := 0; i < parsedN; i++ {
-				dopPosts.FindById(dopPosts.Ids[50])
+				dop.FindPostById(input)
 				//fmt.Printf("Post Index: %d\n", postId)
 			}
 		case "OopFindByTitle":
