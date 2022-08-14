@@ -7,15 +7,17 @@ import (
 )
 
 func main() {
-	surveys := oop.MakeSurveys(10)
-	surveyInstances := oop.MakeSurveyInstances(surveys, 1000)
-	scheduled := make([]oop.SurveyInstance, len(surveyInstances))
-	fmt.Printf("SurveyInstances Length: %d\n", len(surveyInstances))
-	// Send all our surveys
-	scheduled = oop.SendOrSchedule(surveyInstances, scheduled)
+	authors := oop.MakeAuthors(1)
+	posts := oop.MakePosts(10, authors)
+	found := oop.FindPostsByAuthorName("Author 0", posts)
+	fmt.Printf("Length of Oop Posts: %d\n", len(posts))
+	fmt.Printf("Found %d posts\n", len(found))
 
-	dodSurveys := dod.MakeSurveys(10, 0)
-	dodSurveyInstances := dod.MakeSurveyInstances(1000, dodSurveys.IDs)
-	fmt.Printf("DodSurveys Length: %d\n", len(dodSurveyInstances.IDs))
+	dodAuthors := dod.MakeAuthors(1)
+	dodPosts := dod.MakePosts(10, dodAuthors)
+	fmt.Printf("Length of Dod Posts: %d\n", len(dodPosts.Ids))
+	//dodSurveys := dod.MakeSurveys(10, 0)
+	//dodSurveyInstances := dod.MakeSurveyInstances(1000, dodSurveys.IDs)
+	//fmt.Printf("DodSurveys Length: %d\n", len(dodSurveyInstances.IDs))
 
 }
