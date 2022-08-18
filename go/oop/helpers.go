@@ -37,3 +37,21 @@ func MakePosts(amount int, authors []Author) []Post {
 
 	return p
 }
+
+func MakePostsDeterministic(amount, postsPerAuthor int, authors []Author) []Post {
+	var p = make([]Post, amount)
+	var author Author
+
+	for i := 0; i < amount; i++ {
+		pTitle := fmt.Sprintf("Post %d", i)
+		pBody := fmt.Sprintf("I am the description for survey %d", i)
+		authorIdx := i / postsPerAuthor
+
+		if authorIdx >= 0 && authorIdx < len(authors) {
+			author = authors[authorIdx]
+		}
+		p[i] = *NewPost(author, pTitle, pBody)
+	}
+
+	return p
+}
