@@ -15,6 +15,7 @@ func main() {
 	dopAuthors := dop.MakeAuthors(100)
 	dopPosts := dop.MakePosts(10000, dopAuthors)
 
+  // TODO: Possibly display a menu here with the commands or pass by arg?
 	var command string
 	fmt.Print("Enter a command to run: ")
 	_, err := fmt.Scanln(&command)
