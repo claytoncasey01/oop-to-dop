@@ -6,12 +6,12 @@ import (
 )
 
 type Posts struct {
-	Ids       []uuid.UUID
-	Titles    []string
-	Bodies    []string
-	UpdateAts []time.Time
-	Published []bool
-	Authors   []int
+	Ids        []uuid.UUID
+	Titles     []string
+	Bodies     []string
+	UpdatedAts []time.Time
+	Published  []bool
+	Authors    []int
 }
 
 func AddPost(title, body string, authorId uuid.UUID, p *Posts, authors *Authors) {
@@ -20,7 +20,7 @@ func AddPost(title, body string, authorId uuid.UUID, p *Posts, authors *Authors)
 	p.Bodies = append(p.Bodies, body)
 	p.Published = append(p.Published, false)
 	p.Authors = append(p.Authors, authors.FindById(authorId))
-	p.UpdateAts = append(p.UpdateAts, time.Now())
+	p.UpdatedAts = append(p.UpdatedAts, time.Now())
 }
 
 type FindPostByIdInput struct {
@@ -37,24 +37,6 @@ func FindPostById(input FindPostByIdInput) int {
 	}
 
 	return -1
-}
-
-type FindPostsByIdsInput struct {
-	PostIds []uuid.UUID
-	Ids     []uuid.UUID
-}
-
-// FindPostsByIds takes a slice of ids and posts, then finds all posts by the matching ids or an empty slice
-func FindPostsByIds(input FindPostsByIdsInput) []int {
-	var posts []int
-
-	for i, id := range input.Ids {
-		if input.PostIds[i] == id {
-			posts = append(posts, i)
-		}
-	}
-
-	return posts
 }
 
 type FindPostByTitleInput struct {
@@ -91,7 +73,7 @@ func FindPostsByAuthorName(input PostsByAuthorNameInput) []int {
 }
 
 type PublishPostInput struct {
-	Ids           []uuid.UUID
+	Id            uuid.UUID
 	PostIds       []uuid.UUID
 	PostPublished []bool
 	PostUpdatedAt []time.Time
@@ -100,45 +82,47 @@ type PublishPostInput struct {
 // PublishPost Publishes posts for the given uuids
 // TODO: May need to modify this to return a set of new arrays or do an update
 func PublishPost(input PublishPostInput) {
-	idxs := FindPostsByIds(FindPostsByIdsInput{Ids: input.Ids, PostIds: input.PostIds})
+	var idx = FindPostById(FindPostByIdInput{Ids: input.PostIds, Id: input.Id})
 
-	for _, idx := range idxs {
-		if input.PostPublished[idx] {
-			continue
-		}
-		input.PostUpdatedAt[idx] = time.Now()
-		input.PostPublished[idx] = true
+	if input.PostPublished[idx] {
+		return
 	}
+	input.PostUpdatedAt[idx] = time.Now()
+	input.PostPublished[idx] = true
 }
 
-type UpdatePostsInput struct {
-	PostIdsToUpdate []uuid.UUID
-	Titles          []string
-	Bodies          []string
-	Posts           *Posts
+type UpdatePostInput struct {
+	PostIdToUpdate uuid.UUID
+	Title          string
+	Body           string
+	Posts          *Posts
 }
 
-// UpdatePosts Updates any posts with matching ids with the given data.
-func UpdatePosts(input UpdatePostsInput) {
-	idxs := FindPostsByIds(FindPostsByIdsInput{Ids: input.PostIdsToUpdate, PostIds: input.PostIdsToUpdate})
-	for i, idx := range idxs {
-		if input.Titles != nil {
-			input.Posts.Titles[idx] = input.Titles[i]
-		}
-		if input.Bodies != nil {
-			input.Posts.Bodies[idx] = input.Bodies[i]
-		}
+// UpdatePost Updates any posts with matching ids with the given data.
+func UpdatePost(input UpdatePostInput) {
+	var idx = FindPostById(FindPostByIdInput{Ids: input.Posts.Ids, Id: input.PostIdToUpdate})
 
-		input.Posts.UpdateAts[idx] = time.Now()
+	if input.Title != "" {
+		input.Posts.Titles[idx] = input.Title
 	}
+	if input.Body != "" {
+		input.Posts.Bodies[idx] = input.Body
+	}
+
+	input.Posts.UpdatedAts[idx] = time.Now()
 }
 
-type DeletePostsInput struct {
-  PostsIdsToDelete []uuid.UUID
-  Posts *Posts
+type DeletePostInput struct {
+	DeleteId uuid.UUID
+	Posts    *Posts
 }
 
-func DeletePosts(input DeletePostsInput) {
-  //TODO: Implement me
-  panic("Not yet implemented")
+func DeletePost(input DeletePostInput) {
+	var idx = FindPostById(FindPostByIdInput{Ids: input.Posts.Ids, Id: input.DeleteId})
+	input.Posts.Ids = append(input.Posts.Ids[:idx], input.Posts.Ids[idx+1:]...)
+	input.Posts.Titles = append(input.Posts.Titles[:idx], input.Posts.Titles[idx+1:]...)
+	input.Posts.Bodies = append(input.Posts.Bodies[:idx], input.Posts.Bodies[idx+1:]...)
+	input.Posts.Published = append(input.Posts.Published[:idx], input.Posts.Published[idx+1:]...)
+	input.Posts.UpdatedAts = append(input.Posts.UpdatedAts[:idx], input.Posts.UpdatedAts[idx+1:]...)
+	input.Posts.Authors = append(input.Posts.Authors[:idx], input.Posts.Authors[idx+1:]...)
 }

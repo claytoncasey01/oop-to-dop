@@ -1,23 +1,26 @@
+PASS
+ok  	github.com/claytoncasey01/oop-to-dop	0.378s
 goos: darwin
-goarch: amd64
+goarch: arm64
 pkg: github.com/claytoncasey01/oop-to-dop/dop
-cpu: VirtualApple @ 2.50GHz
-BenchmarkDopFindById-10                 	  875078	      2339 ns/op	       0 B/op	       0 allocs/op
-BenchmarkDopFindByTitle-10              	154347734	         7.826 ns/op	       0 B/op	       0 allocs/op
-BenchmarkDopFindPostsByAuthorName-10    	 3780052	       314.9 ns/op	       8 B/op	       1 allocs/op
-BenchmarkDopPublishPosts-10             	    9507	    105472 ns/op	  357628 B/op	      19 allocs/op
-BenchmarkDopUpdatePosts-10              	    1316	    884183 ns/op	  358712 B/op	      34 allocs/op
-BenchmarkDopAdd-10                      	 1000000	      1090 ns/op	     509 B/op	       1 allocs/op
-ok  	github.com/claytoncasey01/oop-to-dop/dop	9.813s
-
+BenchmarkDopFindById-10                 	  197044	     12758 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDopFindByTitle-10              	229388926	         5.242 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDopFindPostsByAuthorName-10    	 4218582	       279.6 ns/op	       8 B/op	       1 allocs/op
+BenchmarkDopPublishPosts-10             	183117157	         6.578 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDopUpdatePosts-10              	25024437	        47.37 ns/op	       0 B/op	       0 allocs/op
+BenchmarkDopAdd-10                      	 2569222	       449.8 ns/op	     433 B/op	       1 allocs/op
+BenchmarkDopDelete-10                   	     192	   6390398 ns/op	       0 B/op	       0 allocs/op
+PASS
+ok  	github.com/claytoncasey01/oop-to-dop/dop	12.604s
 goos: darwin
-goarch: amd64
+goarch: arm64
 pkg: github.com/claytoncasey01/oop-to-dop/oop
-cpu: VirtualApple @ 2.50GHz
-BenchmarkOopFindPostById-10            	  517466	     12544 ns/op	       0 B/op	       0 allocs/op
-BenchmarkOopFindPostByTitle-10         	100000000	        11.54 ns/op	       0 B/op	       0 allocs/op
-BenchmarkOopFindPostByAuthorName-10    	   29083	     41406 ns/op	       0 B/op	       0 allocs/op
-BenchmarkOopPublishPost-10             	    1414	    863166 ns/op	       0 B/op	       0 allocs/op
-BenchmarkOopUpdatePost-10              	     318	   8405869 ns/op	24205845 B/op	   20002 allocs/op
-BenchmarkOopAddPost-10                 	  785097	      2623 ns/op	     893 B/op	       2 allocs/op
-ok  	github.com/claytoncasey01/oop-to-dop/oop	16.028s
+BenchmarkOopFindPostById-10            	   60790	     51214 ns/op	       0 B/op	       0 allocs/op
+BenchmarkOopFindPostByTitle-10         	67796770	        17.59 ns/op	       0 B/op	       0 allocs/op
+BenchmarkOopFindPostByAuthorName-10    	   19292	     61837 ns/op	       0 B/op	       0 allocs/op
+BenchmarkOopPublishPost-10             	    2810	    428925 ns/op	       0 B/op	       0 allocs/op
+BenchmarkOopUpdatePost-10              	     451	   8154272 ns/op	34091767 B/op	   20002 allocs/op
+BenchmarkOopAddPost-10                 	 1753035	       640.9 ns/op	     764 B/op	       2 allocs/op
+BenchmarkOopDeletePost-10              	      68	  17517850 ns/op	       0 B/op	       0 allocs/op
+PASS
+ok  	github.com/claytoncasey01/oop-to-dop/oop	15.436s

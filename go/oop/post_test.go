@@ -128,3 +128,11 @@ func BenchmarkOopAddPost(b *testing.B) {
 		posts = append(posts, *NewPost(authors[0], "Oop Bench Add", "Benchmark add post for Oop"))
 	}
 }
+
+func BenchmarkOopDeletePost(b *testing.B) {
+	post := posts[0]
+
+	for i := 0; i < b.N; i++ {
+		post.Delete(posts)
+	}
+}
