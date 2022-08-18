@@ -24,9 +24,9 @@ func MakePosts(amount int, authors *Authors) *Posts {
 	random := rand.New(rand.NewSource(time.Now().Unix()))
 
 	posts := &Posts{Ids: make([]uuid.UUID, amount), Titles: make([]string, amount), Bodies: make([]string, amount),
-		UpdateAts: make([]time.Time, amount),
-		Published: make([]bool, amount),
-		Authors:   make([]int, amount)}
+		UpdatedAts: make([]time.Time, amount),
+		Published:  make([]bool, amount),
+		Authors:    make([]int, amount)}
 	for i := 0; i < amount; i++ {
 		randomAuthor := random.Intn(len(authors.Ids))
 		posts.Ids[i] = uuid.New()
