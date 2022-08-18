@@ -66,3 +66,9 @@ func BenchmarkDopUpdatePosts(b *testing.B) {
 		UpdatePosts(input)
 	}
 }
+
+func BenchmarkDopAdd(b *testing.B) {
+  for i := 0; i < b.N; i++ {
+    AddPost("Test Add", "Post to bench adding", authors.Ids[0], posts, authors)
+  }
+}

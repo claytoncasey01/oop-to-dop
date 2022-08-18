@@ -33,6 +33,7 @@ type PostUpdate struct {
 	Published bool
 }
 
+// Update TODO: Should operate on a posts slice
 // Update updates a post
 func (p *Post) Update(updatedPost PostUpdate) {
 	p.UpdatedAt = time.Now()
@@ -41,6 +42,21 @@ func (p *Post) Update(updatedPost PostUpdate) {
 	p.Title = updatedPost.Title
 }
 
+// Delete TODO: Could possibly return []Post, nil here instead. Also might make sense to not be a method?
+// Delete Takes an id of the post to delete and the posts slice to remove it
+// from. It returns a new posts slice with the element removed if found.
+func (p *Post) Delete(posts []Post) []Post {
+	var newPosts = posts
+
+	for i, post := range posts {
+		if p.Id == post.Id {
+			newPosts = append(newPosts[:i], newPosts[i+1:]...)
+		}
+	}
+	return newPosts
+}
+
+// Publish TODO: May need to return new posts slice for every mutation, to lazy right now.
 func (p *Post) Publish() {
 	p.UpdatedAt = time.Now()
 	p.Published = true

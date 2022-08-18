@@ -13,3 +13,4 @@ After seeing many talks on Data Oriented Programming but few examples on how to 
 * Zig Examples
 * C++ Examples
 * Others (Kotlin, Typescript, Java, C#)?
+* Real-World Examples in each language (Web Server, CLI, etc possibly)

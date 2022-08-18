@@ -14,7 +14,7 @@ type Posts struct {
 	Authors   []int
 }
 
-func (p *Posts) Add(title, body string, authorId uuid.UUID, authors *Authors) {
+func AddPost(title, body string, authorId uuid.UUID, p *Posts, authors *Authors) {
 	p.Ids = append(p.Ids, uuid.New())
 	p.Titles = append(p.Titles, title)
 	p.Bodies = append(p.Bodies, body)
@@ -90,10 +90,6 @@ func FindPostsByAuthorName(input PostsByAuthorNameInput) []int {
 	return posts
 }
 
-func (p *Posts) Update() {
-	// TODO: Implement Update
-}
-
 type PublishPostInput struct {
 	Ids           []uuid.UUID
 	PostIds       []uuid.UUID
@@ -135,4 +131,14 @@ func UpdatePosts(input UpdatePostsInput) {
 
 		input.Posts.UpdateAts[idx] = time.Now()
 	}
+}
+
+type DeletePostsInput struct {
+  PostsIdsToDelete []uuid.UUID
+  Posts *Posts
+}
+
+func DeletePosts(input DeletePostsInput) {
+  //TODO: Implement me
+  panic("Not yet implemented")
 }
