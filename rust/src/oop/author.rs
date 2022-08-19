@@ -1,0 +1,17 @@
+use uuid::Uuid;
+
+pub struct Author {
+    pub id: Uuid,
+    pub name: String,
+    bio: String,
+}
+
+impl Author {
+    pub fn new(name: String, bio: String) -> Author {
+        Author {
+            id: Uuid::new_v4(),
+            name,
+            bio,
+        }
+    }
+}
