@@ -1,5 +1,6 @@
 use uuid::Uuid;
 
+#[derive(Debug)]
 pub struct Author {
     pub id: Uuid,
     pub name: String,

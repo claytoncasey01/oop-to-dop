@@ -1,27 +1,27 @@
-
 use chrono::{DateTime, Utc};
 use uuid::Uuid;
-use crate::oop::author::{Author};
+
+use crate::oop::author::Author;
 
 #[derive(Debug, Clone)]
-pub struct Post {
+pub struct Post<'a> {
     pub id: Uuid,
     title: String,
     body: String,
     published: bool,
     updated_at: DateTime<Utc>,
-    author_id: Uuid
+    author: &'a Author,
 }
 
-impl Post {
-    pub fn new(title: String, body: String, author: &Author) -> Self {
+impl<'a> Post<'a> {
+    pub fn new(title: String, body: String, author: &'a Author) -> Self {
         Post {
             id: Uuid::new_v4(),
             title,
             body,
             published: false,
             updated_at: Utc::now(),
-            author_id: author.id.clone()
+            author,
         }
     }
 
@@ -44,8 +44,8 @@ pub fn find_by_title(title: String, posts: Vec<Post>) -> Option<Post> {
     posts.into_iter().find(|post| post.title == title)
 }
 
-pub fn find_by_author_id(author_id: Uuid, posts: Vec<Post>) -> Option<Post> {
-    posts.into_iter().find(|post| post.author_id == author_id)
+pub fn find_by_author_name(author_name: String, posts: Vec<Post>) -> Option<Post> {
+    posts.into_iter().find(|post| post.author.name == author_name)
 }
 
 pub fn delete(id: Uuid, posts: &mut Vec<Post>) {
@@ -57,8 +57,10 @@ pub fn delete(id: Uuid, posts: &mut Vec<Post>) {
 #[cfg(test)]
 mod test {
     use crate::oop::author::Author;
-    use super::*;
     use crate::util::*;
+    use crate::util::oop::create_authors;
+
+    use super::*;
 
     #[test]
     fn test_new_post() {
@@ -70,12 +72,13 @@ mod test {
         assert_eq!(post.title, title);
         assert_eq!(post.body, body);
         assert_eq!(post.published, false);
-        assert_eq!(post.author_id, author.id);
+        assert_eq!(post.author.id, author.id);
     }
 
     #[test]
     fn test_find_by_id() {
-        let posts = oop::create_posts(100, 50);
+        let authors = oop::create_authors(50);
+        let posts = oop::create_posts(100, &authors);
         let expected_id = posts[50].id.clone();
         let actual_id = find_by_id(expected_id.clone(), posts).unwrap().id;
         assert_eq!(actual_id.to_string(), expected_id.to_string());
@@ -83,20 +86,22 @@ mod test {
 
     #[test]
     fn test_find_by_title() {
-        let posts = oop::create_posts(100, 50);
-
+        let authors = oop::create_authors(50);
+        let posts = oop::create_posts(100, &authors);
         let expected_title = posts[50].title.clone();
         let actual_title = find_by_title(expected_title.clone(), posts).unwrap().title.clone();
         assert_eq!(actual_title, expected_title);
     }
 
     #[test]
-    fn test_find_by_author_id() {
-        let posts = oop::create_posts(100, 50);
-        let expected_author_id = posts[50].author_id.clone();
-        let actual_author_id = find_by_author_id(expected_author_id.clone(), posts).unwrap().author_id;
+    fn test_find_by_author_name() {
+        let authors = oop::create_authors(50);
+        let posts = oop::create_posts(100, &authors);
+        let expected_author_name = posts[50].author.name.clone();
+        let actual_author_name = find_by_author_name(expected_author_name.clone(), posts)
+            .unwrap().author.name.clone();
 
-        assert_eq!(actual_author_id, expected_author_id);
+        assert_eq!(actual_author_name, expected_author_name);
     }
 
     #[test]
@@ -120,7 +125,8 @@ mod test {
 
     #[test]
     fn test_delete() {
-        let mut posts = oop::create_posts(100, 50);
+        let authors = create_authors(50);
+        let mut posts = oop::create_posts(100, &authors);
         let post_id = posts[50].id.clone();
 
         delete(post_id, &mut posts);

@@ -15,8 +15,7 @@ pub fn create_authors(amount: usize) -> Vec<Author> {
     authors
 }
 
-pub fn create_posts(amount: usize, author_amount: usize) -> Vec<Post> {
-    let authors = create_authors(author_amount);
+pub fn create_posts(amount: usize, authors: &Vec<Author>) -> Vec<Post> {
     let mut posts = Vec::with_capacity(amount);
     let title = String::from("Post #");
     let body = String::from("Body for post #");
