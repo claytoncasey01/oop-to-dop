@@ -56,7 +56,6 @@ func (p *Post) Delete(posts []Post) []Post {
 	return newPosts
 }
 
-// Publish TODO: May need to return new posts slice for every mutation, to lazy right now.
 func (p *Post) Publish() {
 	p.UpdatedAt = time.Now()
 	p.Published = true

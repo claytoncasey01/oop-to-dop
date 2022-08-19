@@ -4,7 +4,7 @@ use uuid::Uuid;
 pub struct Author {
     pub id: Uuid,
     pub name: String,
-    bio: String,
+    pub bio: String,
 }
 
 impl Author {

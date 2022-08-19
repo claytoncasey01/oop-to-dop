@@ -1,6 +1,6 @@
 use criterion::{BenchmarkId, black_box, Criterion, criterion_group, criterion_main};
 
-use rust_oop_to_dop::oop::post::{find_by_id, find_by_title, Post};
+use rust_oop_to_dop::oop::post::{find_post_by_id, find_post_by_title, Post};
 use rust_oop_to_dop::oop::author::{Author};
 use rust_oop_to_dop::util::oop;
 
@@ -22,7 +22,7 @@ fn find_by_id_bench(c: &mut Criterion) {
     let post_id = posts[posts.len() / 2].id.clone();
 
     c.bench_function("oop_find_by_id", |b| {
-        b.iter(|| find_by_id(black_box(post_id), black_box(posts.clone())));
+        b.iter(|| find_post_by_id(black_box(post_id), black_box(posts.clone())));
     });
 }
 
