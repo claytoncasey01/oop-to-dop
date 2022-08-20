@@ -1,4 +1,3 @@
-use chrono::{DateTime, Utc};
 use rand::Rng;
 use uuid::Uuid;
 use crate::dop::posts::Posts;
@@ -20,7 +19,7 @@ fn create_authors(amount: usize) -> Authors {
 fn create_posts(amount: usize, author_ids: &Vec<String>) -> Posts {
     let mut posts = Posts::new(amount);
     let mut rng = rand::thread_rng();
-    let mut author_idx = 0;
+    let mut author_idx;
 
     for n in 0..amount {
         author_idx = rng.gen_range(0..author_ids.len() - 1);
@@ -30,5 +29,5 @@ fn create_posts(amount: usize, author_ids: &Vec<String>) -> Posts {
         posts.author_idxs.push(author_idx);
     }
 
-    Posts { ids, titles, bodies, published, updated_ats, author_idxs }
+    posts
 }
