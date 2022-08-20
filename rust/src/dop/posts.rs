@@ -1,5 +1,6 @@
 use chrono::{DateTime, Utc};
 use uuid::Uuid;
+use crate::oop::post::find_post_by_id;
 
 pub struct Posts {
     pub ids: Vec<Uuid>,
@@ -23,5 +24,10 @@ impl Posts {
 
     pub fn find_posts_by_title(title: String, titles: &Vec<String>) -> Option<usize> {
         titles.into_iter().position(|found_title| found_title == title)
+    }
+
+    pub fn publish(id: Uuid, ids: &Vec<Uuid>, published: &mut Vec<bool>) {
+        let found_idx = Self::find_post_by_id(id, ids);
+        published[found_idx] = true;
     }
 }
