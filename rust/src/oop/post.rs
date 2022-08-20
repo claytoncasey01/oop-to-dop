@@ -35,7 +35,7 @@ impl<'a> Post<'a> {
         self.published = true;
     }
 }
-
+// TODO: Move these into Post impl so we can do Post::function
 pub fn find_post_by_id(id: Uuid, posts: Vec<Post>) -> Option<Post> {
     posts.into_iter().find(|post| post.id == id)
 }
