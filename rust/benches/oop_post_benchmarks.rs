@@ -17,32 +17,32 @@ fn new_post_bench(c: &mut Criterion) {
 }
 
 fn find_by_id_bench(c: &mut Criterion) {
-    let authors = oop::create_authors(50);
-    let posts = oop::create_posts(100, &authors);
+    let authors = oop::create_authors(100);
+    let posts = oop::create_posts(10000, &authors);
     let post_id = posts[posts.len() / 2].id.clone();
 
-    c.bench_function("oop_find_by_id", |b| {
-        b.iter(|| find_post_by_id(black_box(post_id), black_box(posts.clone())));
+    c.bench_function("oop_find_by_id", move |b| {
+        b.iter(|| find_post_by_id(black_box(post_id), black_box(&posts)));
     });
 }
 
 fn find_by_title_bench(c: &mut Criterion) {
-    let authors = oop::create_authors(50);
-    let posts = oop::create_posts(100, &authors);
+    let authors = oop::create_authors(100);
+    let posts = oop::create_posts(10000, &authors);
     let title = String::from("Post #40");
 
     c.bench_function("oop_find_by_title", |b| {
-        b.iter(|| find_post_by_title(black_box(title.clone()), black_box(posts.clone())));
+        b.iter(|| find_post_by_title(black_box(title.clone()), black_box(&posts)));
     });
 }
 
 fn find_by_author_name_bench(c: &mut Criterion) {
-    let authors = oop::create_authors(50);
-    let posts = oop::create_posts(100, &authors);
+    let authors = oop::create_authors(100);
+    let posts = oop::create_posts(10000, &authors);
     let author_name = String::from("Author #10");
 
     c.bench_function("oop_find_by_author_name", |b| {
-        b.iter(|| find_posts_by_author_name(black_box(author_name.clone()), black_box(posts.clone())));
+        b.iter(|| find_posts_by_author_name(black_box(author_name.clone()), black_box(&posts)));
     });
 }
 
@@ -67,9 +67,9 @@ fn publish_bench(c: &mut Criterion) {
 }
 
 fn delete_bench(c: &mut Criterion) {
-    let authors = oop::create_authors(50);
-    let mut posts = oop::create_posts(100, &authors);
-    let post_to_delete = posts[50].id.clone();
+    let authors = oop::create_authors(100);
+    let mut posts = oop::create_posts(10000, &authors);
+    let post_to_delete = posts[100].id.clone();
 
     c.bench_function("oop_delete", |b| {
         b.iter(|| delete(post_to_delete, &mut posts));
@@ -77,9 +77,8 @@ fn delete_bench(c: &mut Criterion) {
 }
 
 fn add_bench(c: &mut Criterion) {
-    let authors = oop::create_authors(50);
-    let mut posts = oop::create_posts(100, &authors);
-    let new_post = Post::new(String::from("New Post"), String::from("New Post Body"), &authors[0]);
+    let authors = oop::create_authors(100);
+    let mut posts = oop::create_posts(10000, &authors);
 
     c.bench_function("oop_add", |b| {
         b.iter(|| posts.push(Post::new(String::from("New Post"), String::from("New Post Body"), &authors[0])));

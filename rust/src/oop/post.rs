@@ -36,15 +36,15 @@ impl<'a> Post<'a> {
     }
 }
 // TODO: Move these into Post impl so we can do Post::function
-pub fn find_post_by_id(id: Uuid, posts: Vec<Post>) -> Option<Post> {
+pub fn find_post_by_id<'a>(id: Uuid, posts: &'a Vec<Post>) -> Option<&'a Post<'a>> {
     posts.into_iter().find(|post| post.id == id)
 }
 
-pub fn find_post_by_title(title: String, posts: Vec<Post>) -> Option<Post> {
+pub fn find_post_by_title<'a>(title: String, posts: &'a Vec<Post>) -> Option<&'a Post<'a>> {
     posts.into_iter().find(|post| post.title == title)
 }
 
-pub fn find_posts_by_author_name(author_name: String, posts: Vec<Post>) -> Vec<Post> {
+pub fn find_posts_by_author_name<'a>(author_name: String, posts: &'a Vec<Post>) -> Vec<&'a Post<'a>> {
     posts.into_iter().filter(|post| post.author.name == author_name).collect()
 }
 
@@ -80,7 +80,7 @@ mod test {
         let authors = oop::create_authors(50);
         let posts = oop::create_posts(100, &authors);
         let expected_id = posts[50].id.clone();
-        let actual_id = find_post_by_id(expected_id.clone(), posts).unwrap().id;
+        let actual_id = find_post_by_id(expected_id.clone(), &posts).unwrap().id;
         assert_eq!(actual_id.to_string(), expected_id.to_string());
     }
 
@@ -89,7 +89,7 @@ mod test {
         let authors = oop::create_authors(50);
         let posts = oop::create_posts(100, &authors);
         let expected_title = posts[50].title.clone();
-        let actual_title = find_post_by_title(expected_title.clone(), posts).unwrap().title.clone();
+        let actual_title = find_post_by_title(expected_title.clone(), &posts).unwrap().title.clone();
         assert_eq!(actual_title, expected_title);
     }
 
@@ -98,7 +98,7 @@ mod test {
         let authors = oop::create_authors(50);
         let posts = oop::create_posts_deterministic(100, 10, &authors);
         let expected_length = 10;
-        let found_posts = find_posts_by_author_name(String::from("Author #0"), posts);
+        let found_posts = find_posts_by_author_name(String::from("Author #0"), &posts);
 
         assert_eq!(expected_length, found_posts.len());
     }
