@@ -28,3 +28,19 @@ pub fn create_posts(amount: usize, authors: &Vec<Author>) -> Vec<Post> {
 
     posts
 }
+
+pub fn create_posts_deterministic(amount: usize, posts_per_author: usize, authors: &Vec<Author>) -> Vec<Post> {
+    let mut posts = Vec::with_capacity(amount);
+    let title = String::from("Post #");
+    let body = String::from("Body for post #");
+    let mut author_idx: usize;
+
+    for n in 0..amount {
+        author_idx = n / posts_per_author;
+
+        if author_idx < authors.len() {
+            posts.push(Post::new(format!("{}{}", title.clone(), n), format!("{}{}", body.clone(), n), &authors[author_idx]));
+        }
+    }
+    posts
+}

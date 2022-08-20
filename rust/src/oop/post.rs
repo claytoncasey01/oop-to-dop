@@ -44,9 +44,8 @@ pub fn find_post_by_title(title: String, posts: Vec<Post>) -> Option<Post> {
     posts.into_iter().find(|post| post.title == title)
 }
 
-// TODO: Should actually find multiple posts and return Vec<Post> instead
-pub fn find_post_by_author_name(author_name: String, posts: Vec<Post>) -> Option<Post> {
-    posts.into_iter().find(|post| post.author.name == author_name)
+pub fn find_posts_by_author_name(author_name: String, posts: Vec<Post>) -> Vec<Post> {
+    posts.into_iter().filter(|post| post.author.name == author_name).collect()
 }
 
 pub fn delete(id: Uuid, posts: &mut Vec<Post>) {
@@ -95,17 +94,13 @@ mod test {
     }
 
     #[test]
-    fn test_find_post_by_author_name() {
+    fn test_find_posts_by_author_name() {
         let authors = oop::create_authors(50);
-        let posts = oop::create_posts(100, &authors);
-        let expected_author_name = posts[50].author.name.clone();
-        let expected_author_bio = posts[50].author.bio.clone();
-        let found_post = find_post_by_author_name(expected_author_name.clone(), posts).unwrap();
-        let actual_author_name = found_post.author.name.clone();
-        let actual_author_bio = found_post.author.bio.clone();
+        let posts = oop::create_posts_deterministic(100, 10, &authors);
+        let expected_length = 10;
+        let found_posts = find_posts_by_author_name(String::from("Author #0"), posts);
 
-        assert_eq!(actual_author_name, expected_author_name);
-        assert_eq!(actual_author_bio, expected_author_bio);
+        assert_eq!(expected_length, found_posts.len());
     }
 
     #[test]
