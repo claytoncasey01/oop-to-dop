@@ -60,6 +60,11 @@ type PostsByAuthorNameInput struct {
 	authorNames []string
 }
 
+// FindPostsByAuthorName returns the index of the posts with a matching author name
+// TODO: I'm dumb, this won't actually work as expected.
+// TODO: We can fix this by looping throuh the author_idx of posts
+// TODO: and matching that idx vs author_names and then checking that for equality
+// TODO: with the passed name, appending that i to the slice.
 func FindPostsByAuthorName(input PostsByAuthorNameInput) []int {
 	var posts []int
 

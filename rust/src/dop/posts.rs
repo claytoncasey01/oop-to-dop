@@ -18,9 +18,23 @@ pub struct PostUpdate {
 
 impl Posts {
     pub fn new(capacity: usize) -> Self {
-        Self { ids: Vec::with_capacity(capacity), titles: Vec::with_capacity(capacity),
-            bodies: Vec::with_capacity(capacity), published: vec![false; capacity],
-            updated_ats: vec![Utc::now(); capacity], author_idxs: Vec::with_capacity(capacity) }
+        Self {
+            ids: Vec::with_capacity(capacity),
+            titles: Vec::with_capacity(capacity),
+            bodies: Vec::with_capacity(capacity),
+            published: vec![false; capacity],
+            updated_ats: vec![Utc::now(); capacity],
+            author_idxs: Vec::with_capacity(capacity),
+        }
+    }
+
+    pub fn add(&mut self, title: String, body: String, author_idx: usize) {
+        self.ids.push(Uuid::new_v4());
+        self.titles.push(title);
+        self.bodies.push(body);
+        self.published.push(false);
+        self.updated_ats.push(Utc::now());
+        self.author_idxs.push(author_idx);
     }
 
     pub fn find_by_id(id: Uuid, ids: &Vec<Uuid>) -> Option<usize> {
@@ -31,8 +45,16 @@ impl Posts {
         titles.into_iter().position(|found_title| *found_title == title)
     }
 
-    pub fn find_by_author_name(author_name: String, author_names: &Vec<String>) -> Option<usize> {
-        author_names.into_iter().position(|current_author_name| *current_author_name == author_name)
+    pub fn find_by_author_name(author_name: String, author_names: &Vec<String>, post_author_idxs: &Vec<usize>) -> Vec<usize> {
+        let mut post_idxs = Vec::new();
+
+        for (i, idx) in post_author_idxs.into_iter().enumerate() {
+            if *author_names[*idx] == author_name {
+                post_idxs.push(i);
+            }
+        }
+
+        post_idxs
     }
 
     // TODO: Probably don't need the entire self struct, really only need ids, titles, updated_ats,
@@ -51,7 +73,7 @@ impl Posts {
                     self.bodies[idx] = updated_body.to_string();
                 }
                 self.updated_ats[idx] = Utc::now();
-            },
+            }
             None => return
         }
     }
@@ -65,37 +87,47 @@ impl Posts {
 
     pub fn delete(&mut self, id: Uuid) {
         // If we found a post with the id, remove all the data for it.
-        // TODO: Test this swap_remove might be fine here. Remove is o(n) worst case because
-        // TODO: We have to shift all elements to preserve order. However we might not care due to
-        // TODO: swap_remove replacing the removed with the last element meaning we should still
-        // TODO: be fine.
         if let Some(idx) = Self::find_by_id(id, &self.ids) {
-            self.ids.remove(idx);
-            self.titles.remove(idx);
-            self.bodies.remove(idx);
-            self.updated_ats.remove(idx);
-            self.published.remove(idx);
-            self.author_idxs.remove(idx);
+            self.ids.swap_remove(idx);
+            self.titles.swap_remove(idx);
+            self.bodies.swap_remove(idx);
+            self.updated_ats.swap_remove(idx);
+            self.published.swap_remove(idx);
+            self.author_idxs.swap_remove(idx);
         }
     }
 }
 
 #[cfg(test)]
 mod test {
-    use super::*;
-    use crate::util::dop::{create_authors, create_posts};
+    use crate::util::dop::{create_authors, create_posts, create_posts_deterministic};
 
-   #[test]
-    fn test_new_posts() {
-       let expected_capacity = 50;
-       let posts = Posts::new(50);
-       assert_eq!(posts.ids.capacity(), expected_capacity);
-       assert_eq!(posts.titles.capacity(), expected_capacity);
-       assert_eq!(posts.bodies.capacity(), expected_capacity);
-       assert_eq!(posts.published.capacity(), expected_capacity);
-       assert_eq!(posts.updated_ats.capacity(), expected_capacity);
-       assert_eq!(posts.author_idxs.capacity(), expected_capacity);
-   }
+    use super::*;
+
+    #[test]
+    fn test_new() {
+        let expected_capacity = 50;
+        let posts = Posts::new(50);
+        assert_eq!(posts.ids.capacity(), expected_capacity);
+        assert_eq!(posts.titles.capacity(), expected_capacity);
+        assert_eq!(posts.bodies.capacity(), expected_capacity);
+        assert_eq!(posts.published.capacity(), expected_capacity);
+        assert_eq!(posts.updated_ats.capacity(), expected_capacity);
+        assert_eq!(posts.author_idxs.capacity(), expected_capacity);
+    }
+
+    #[test]
+    fn test_add() {
+        let authors = create_authors(1);
+        let mut posts = create_posts(2, authors.ids.len());
+        let expected_length = posts.ids.len() + 1;
+        let expected_title = String::from("An Added Post");
+        let expected_body = String::from("An added post body");
+        posts.add(expected_title.clone(), expected_body.clone(), posts.author_idxs[0]);
+        assert_eq!(posts.ids.len(), expected_length);
+        assert_eq!(posts.titles[posts.ids.len() - 1], expected_title);
+        assert_eq!(posts.bodies[posts.ids.len() - 1], expected_body);
+    }
 
     #[test]
     fn test_find_by_id() {
@@ -119,7 +151,12 @@ mod test {
 
     #[test]
     fn test_find_by_author_name() {
-        panic!("Not yet implemented");
+        let authors = create_authors(10);
+        let posts = create_posts_deterministic(100, authors.ids.len(), 10);
+        let expected_length = 10;
+        let found_posts = Posts::find_by_author_name(String::from("Author #0"), &authors.names, &posts.author_idxs);
+        assert_eq!(expected_length, found_posts.len());
+        assert_eq!(found_posts[0], 0);
     }
 
     #[test]
@@ -129,7 +166,7 @@ mod test {
         let expected_title = String::from("Post #0 Updated");
         let expected_body = String::from("Updated post body");
 
-        posts.update(&PostUpdate{
+        posts.update(&PostUpdate {
             id: posts.ids[0].clone(),
             title: Some(expected_title.clone()),
             body: Some(expected_body.clone()),
@@ -153,10 +190,18 @@ mod test {
     #[test]
     fn test_delete() {
         let authors = create_authors(1);
-        let mut posts = create_posts(2, authors.ids.len());
-        let expected_length = 1;
-        posts.delete(posts.ids[0].clone());
-        assert_eq!(expected_length, posts.ids.len());
-    }
+        let mut posts = create_posts(10, authors.ids.len());
+        let expected_length = 9;
+        let expected_title = posts.titles[9].clone();
+        let expected_id = posts.ids[9].clone();
 
+        posts.delete(posts.ids[4].clone());
+
+        let actual_title = posts.titles[4].clone();
+        let actual_id = posts.ids[4].clone();
+
+        assert_eq!(expected_length, posts.ids.len());
+        assert_eq!(expected_title, actual_title);
+        assert_eq!(expected_id, actual_id);
+    }
 }

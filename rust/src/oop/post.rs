@@ -33,6 +33,7 @@ impl<'a> Post<'a> {
 
     pub fn publish(&mut self) {
         self.published = true;
+        self.updated_at = Utc::now();
     }
 }
 // TODO: Move these into Post impl so we can do Post::function
@@ -50,7 +51,7 @@ pub fn find_posts_by_author_name<'a>(author_name: String, posts: &'a Vec<Post>) 
 
 pub fn delete(id: Uuid, posts: &mut Vec<Post>) {
     if let Some(index) = posts.into_iter().position(|post| *post.id.to_string() == id.to_string()) {
-        posts.remove(index);
+        posts.swap_remove(index);
     }
 }
 
