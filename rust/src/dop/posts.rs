@@ -1,6 +1,5 @@
 use chrono::{DateTime, Utc};
 use uuid::Uuid;
-use crate::oop::post::find_post_by_id;
 
 pub struct Posts {
     pub ids: Vec<Uuid>,
@@ -30,6 +29,10 @@ impl Posts {
 
     pub fn find_by_title(title: String, titles: &Vec<String>) -> Option<usize> {
         titles.into_iter().position(|found_title| *found_title == title)
+    }
+
+    pub fn find_by_author_name(author_name: String, author_names: &Vec<String>) -> Option<usize> {
+        author_names.into_iter().position(|current_author_name| *current_author_name == author_name)
     }
 
     // TODO: Probably don't need the entire self struct, really only need ids, titles, updated_ats,
@@ -75,4 +78,85 @@ impl Posts {
             self.author_idxs.remove(idx);
         }
     }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use crate::util::dop::{create_authors, create_posts};
+
+   #[test]
+    fn test_new_posts() {
+       let expected_capacity = 50;
+       let posts = Posts::new(50);
+       assert_eq!(posts.ids.capacity(), expected_capacity);
+       assert_eq!(posts.titles.capacity(), expected_capacity);
+       assert_eq!(posts.bodies.capacity(), expected_capacity);
+       assert_eq!(posts.published.capacity(), expected_capacity);
+       assert_eq!(posts.updated_ats.capacity(), expected_capacity);
+       assert_eq!(posts.author_idxs.capacity(), expected_capacity);
+   }
+
+    #[test]
+    fn test_find_by_id() {
+        let authors = create_authors(10);
+        let posts = create_posts(100, authors.ids.len());
+        let expected_id = posts.ids[50].clone();
+        let id_idx = Posts::find_by_id(expected_id.clone(), &posts.ids).unwrap();
+        let actual_id = posts.ids[id_idx].clone();
+        assert_eq!(expected_id.to_string(), actual_id.to_string());
+    }
+
+    #[test]
+    fn test_find_by_title() {
+        let authors = create_authors(10);
+        let posts = create_posts(100, authors.ids.len());
+        let expected_title = String::from("Post #49");
+        let title_idx = Posts::find_by_title(expected_title.clone(), &posts.titles).unwrap();
+        let actual_title = posts.titles[title_idx].clone();
+        assert_eq!(expected_title.to_string(), actual_title.to_string());
+    }
+
+    #[test]
+    fn test_find_by_author_name() {
+        panic!("Not yet implemented");
+    }
+
+    #[test]
+    fn test_update() {
+        let authors = create_authors(1);
+        let mut posts = create_posts(1, authors.ids.len());
+        let expected_title = String::from("Post #0 Updated");
+        let expected_body = String::from("Updated post body");
+
+        posts.update(&PostUpdate{
+            id: posts.ids[0].clone(),
+            title: Some(expected_title.clone()),
+            body: Some(expected_body.clone()),
+        });
+
+        let actual_title = posts.titles[0].clone();
+        let actual_body = posts.bodies[0].clone();
+        assert_eq!(expected_title, actual_title);
+        assert_eq!(expected_body, actual_body);
+    }
+
+    #[test]
+    fn test_publish() {
+        let authors = create_authors(1);
+        let mut posts = create_posts(1, authors.ids.len());
+        Posts::publish(posts.ids[0].clone(), &posts.ids, &mut posts.published);
+        let actual_published = posts.published[0];
+        assert_eq!(true, actual_published);
+    }
+
+    #[test]
+    fn test_delete() {
+        let authors = create_authors(1);
+        let mut posts = create_posts(2, authors.ids.len());
+        let expected_length = 1;
+        posts.delete(posts.ids[0].clone());
+        assert_eq!(expected_length, posts.ids.len());
+    }
+
 }
