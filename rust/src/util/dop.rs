@@ -1,10 +1,10 @@
 use rand::Rng;
 use uuid::Uuid;
-use crate::dop::posts::Posts;
+
 use crate::dop::authors::Authors;
+use crate::dop::posts::Posts;
 
-
-fn create_authors(amount: usize) -> Authors {
+pub fn create_authors(amount: usize) -> Authors {
     let mut authors = Authors::new(amount);
 
     for n in 0..amount {
@@ -16,13 +16,13 @@ fn create_authors(amount: usize) -> Authors {
     authors
 }
 
-fn create_posts(amount: usize, author_ids: &Vec<String>) -> Posts {
+pub fn create_posts(amount: usize, author_ids_len: usize) -> Posts {
     let mut posts = Posts::new(amount);
     let mut rng = rand::thread_rng();
-    let mut author_idx;
+    let mut author_idx: usize;
 
     for n in 0..amount {
-        author_idx = rng.gen_range(0..author_ids.len() - 1);
+        author_idx = if author_ids_len <= 1 { 0 } else { rng.gen_range(0..author_ids_len - 1) };
         posts.ids.push(Uuid::new_v4());
         posts.titles.push(format!("Post #{}", n));
         posts.bodies.push(format!("Body for post #{}", n));
