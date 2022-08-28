@@ -33,24 +33,25 @@ impl<'a> Post<'a> {
 
     pub fn publish(&mut self) {
         self.published = true;
+        self.updated_at = Utc::now();
     }
 }
-
-pub fn find_post_by_id(id: Uuid, posts: Vec<Post>) -> Option<Post> {
+// TODO: Move these into Post impl so we can do Post::function
+pub fn find_post_by_id<'a>(id: Uuid, posts: &'a Vec<Post>) -> Option<&'a Post<'a>> {
     posts.into_iter().find(|post| post.id == id)
 }
 
-pub fn find_post_by_title(title: String, posts: Vec<Post>) -> Option<Post> {
+pub fn find_post_by_title<'a>(title: String, posts: &'a Vec<Post>) -> Option<&'a Post<'a>> {
     posts.into_iter().find(|post| post.title == title)
 }
 
-pub fn find_posts_by_author_name(author_name: String, posts: Vec<Post>) -> Vec<Post> {
+pub fn find_posts_by_author_name<'a>(author_name: String, posts: &'a Vec<Post>) -> Vec<&'a Post<'a>> {
     posts.into_iter().filter(|post| post.author.name == author_name).collect()
 }
 
 pub fn delete(id: Uuid, posts: &mut Vec<Post>) {
     if let Some(index) = posts.into_iter().position(|post| *post.id.to_string() == id.to_string()) {
-        posts.remove(index);
+        posts.swap_remove(index);
     }
 }
 
@@ -61,6 +62,9 @@ mod test {
     use crate::util::oop::create_authors;
 
     use super::*;
+    
+    const AUTHOR_AMOUNT: usize = 50;
+    const POST_AMOUNT: usize = 100;
 
     #[test]
     fn test_new_post() {
@@ -77,28 +81,28 @@ mod test {
 
     #[test]
     fn test_find_post_by_id() {
-        let authors = oop::create_authors(50);
-        let posts = oop::create_posts(100, &authors);
+        let authors = oop::create_authors(AUTHOR_AMOUNT);
+        let posts = oop::create_posts(POST_AMOUNT, &authors);
         let expected_id = posts[50].id.clone();
-        let actual_id = find_post_by_id(expected_id.clone(), posts).unwrap().id;
+        let actual_id = find_post_by_id(expected_id.clone(), &posts).unwrap().id;
         assert_eq!(actual_id.to_string(), expected_id.to_string());
     }
 
     #[test]
     fn test_find_post_by_title() {
-        let authors = oop::create_authors(50);
-        let posts = oop::create_posts(100, &authors);
+        let authors = oop::create_authors(AUTHOR_AMOUNT);
+        let posts = oop::create_posts(POST_AMOUNT, &authors);
         let expected_title = posts[50].title.clone();
-        let actual_title = find_post_by_title(expected_title.clone(), posts).unwrap().title.clone();
+        let actual_title = find_post_by_title(expected_title.clone(), &posts).unwrap().title.clone();
         assert_eq!(actual_title, expected_title);
     }
 
     #[test]
     fn test_find_posts_by_author_name() {
-        let authors = oop::create_authors(50);
+        let authors = oop::create_authors(AUTHOR_AMOUNT);
         let posts = oop::create_posts_deterministic(100, 10, &authors);
         let expected_length = 10;
-        let found_posts = find_posts_by_author_name(String::from("Author #0"), posts);
+        let found_posts = find_posts_by_author_name(String::from("Author #0"), &posts);
 
         assert_eq!(expected_length, found_posts.len());
     }
@@ -124,8 +128,8 @@ mod test {
 
     #[test]
     fn test_delete() {
-        let authors = create_authors(50);
-        let mut posts = oop::create_posts(100, &authors);
+        let authors = create_authors(AUTHOR_AMOUNT);
+        let mut posts = oop::create_posts(POST_AMOUNT, &authors);
         let post_id = posts[50].id.clone();
 
         delete(post_id, &mut posts);

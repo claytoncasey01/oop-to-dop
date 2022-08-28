@@ -33,7 +33,6 @@ type PostUpdate struct {
 	Published bool
 }
 
-// Update TODO: Should operate on a posts slice
 // Update updates a post
 func (p *Post) Update(updatedPost PostUpdate) {
 	p.UpdatedAt = time.Now()
