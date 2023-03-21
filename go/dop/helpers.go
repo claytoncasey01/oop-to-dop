@@ -28,14 +28,33 @@ func MakePosts(amount int, authors *Authors) *Posts {
 		Published:  make([]bool, amount),
 		Authors:    make([]int, amount)}
 	for i := 0; i < amount; i++ {
-		randomAuthor := random.Intn(len(authors.Ids))
+		randomAuthor := random.Intn(len(authors.Ids) - 1)
 		posts.Ids[i] = uuid.New()
 		posts.Titles[i] = fmt.Sprintf("Post %d", i)
 		posts.Bodies[i] = fmt.Sprintf("I am the body for post %d", i)
-		//posts.Published[i] = random.Intn(100)%2 == 0
 		posts.Published[i] = false
-		posts.Authors[i] = randomAuthor - 1
+		posts.Authors[i] = randomAuthor
 	}
 
+	return posts
+}
+
+// MakePostsDeterministic Helper function to create posts with no random authors
+func MakePostsDeterministic(amount int, authors *Authors, postsPerAuthor int) *Posts {
+	posts := &Posts{Ids: make([]uuid.UUID, amount), Titles: make([]string, amount), Bodies: make([]string, amount),
+		UpdatedAts: make([]time.Time, amount),
+		Published:  make([]bool, amount),
+		Authors:    make([]int, amount)}
+
+	for i := 0; i < amount; i++ {
+		authorIdx := i / postsPerAuthor
+		posts.Ids[i] = uuid.New()
+		posts.Titles[i] = fmt.Sprintf("Post %d", i)
+		posts.Bodies[i] = fmt.Sprintf("I am the body for post %d", i)
+		posts.Published[i] = false
+		if authorIdx < len(authors.Ids) {
+			posts.Authors[i] = authorIdx
+		}
+	}
 	return posts
 }

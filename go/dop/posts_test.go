@@ -7,8 +7,9 @@ import (
 )
 
 var (
-	authors = MakeAuthors(100)
-	posts   = MakePosts(10000, authors)
+	authors            = MakeAuthors(100)
+	posts              = MakePosts(10000, authors)
+	postsDeterministic = MakePostsDeterministic(10000, authors, 10)
 )
 
 // Unit Tests
@@ -33,6 +34,20 @@ func TestDopFindPostById(t *testing.T) {
 
 	if actual != expected {
 		t.Errorf("Expected %d posts, got %d", expected, actual)
+	}
+
+}
+
+func TestDopFindPostByAuthorName(t *testing.T) {
+	expected := 10
+	actual := FindPostsByAuthorName(PostsByAuthorNameInput{
+		name:           authors.Names[expected],
+		authorNames:    authors.Names,
+		postAuthorIdxs: posts.Authors,
+	})
+
+	if len(actual) != expected {
+		t.Errorf("Expected %d posts, got %d", expected, len(actual))
 	}
 
 }
@@ -91,10 +106,10 @@ func BenchmarkDopFindByTitle(b *testing.B) {
 }
 
 func BenchmarkDopFindPostsByAuthorName(b *testing.B) {
-	random := rand.New(rand.NewSource(time.Now().UnixNano()))
-	randomAuthorIdx := random.Intn(len(authors.Ids) - 1)
-	randomAuthor := authors.Names[randomAuthorIdx]
-	input := PostsByAuthorNameInput{name: randomAuthor, authorNames: authors.Names}
+	//random := rand.New(rand.NewSource(time.Now().UnixNano()))
+	//randomAuthorIdx := random.Intn(len(authors.Ids) - 1)
+	//randomAuthor := authors.Names[randomAuthorIdx]
+	input := PostsByAuthorNameInput{name: "Author 0", authorNames: authors.Names, postAuthorIdxs: postsDeterministic.Authors}
 
 	for i := 0; i < b.N; i++ {
 		FindPostsByAuthorName(input)

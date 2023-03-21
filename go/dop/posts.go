@@ -56,20 +56,17 @@ func FindPostByTitle(input FindPostByTitleInput) int {
 }
 
 type PostsByAuthorNameInput struct {
-	name        string
-	authorNames []string
+	name           string
+	authorNames    []string
+	postAuthorIdxs []int
 }
 
 // FindPostsByAuthorName returns the index of the posts with a matching author name
-// TODO: I'm dumb, this won't actually work as expected.
-// TODO: We can fix this by looping throuh the author_idx of posts
-// TODO: and matching that idx vs author_names and then checking that for equality
-// TODO: with the passed name, appending that i to the slice.
+// TODO: Something weird with this
 func FindPostsByAuthorName(input PostsByAuthorNameInput) []int {
 	var posts []int
-
-	for i, name := range input.authorNames {
-		if name == input.name {
+	for i, idx := range input.postAuthorIdxs {
+		if input.authorNames[idx] == input.name {
 			posts = append(posts, i)
 		}
 	}
