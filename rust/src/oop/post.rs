@@ -45,12 +45,21 @@ pub fn find_post_by_title<'a>(title: String, posts: &'a Vec<Post>) -> Option<&'a
     posts.into_iter().find(|post| post.title == title)
 }
 
-pub fn find_posts_by_author_name<'a>(author_name: String, posts: &'a Vec<Post>) -> Vec<&'a Post<'a>> {
-    posts.into_iter().filter(|post| post.author.name == author_name).collect()
+pub fn find_posts_by_author_name<'a>(
+    author_name: String,
+    posts: &'a Vec<Post>,
+) -> Vec<&'a Post<'a>> {
+    posts
+        .into_iter()
+        .filter(|post| post.author.name == author_name)
+        .collect()
 }
 
 pub fn delete(id: Uuid, posts: &mut Vec<Post>) {
-    if let Some(index) = posts.into_iter().position(|post| *post.id.to_string() == id.to_string()) {
+    if let Some(index) = posts
+        .into_iter()
+        .position(|post| *post.id.to_string() == id.to_string())
+    {
         posts.swap_remove(index);
     }
 }
@@ -58,17 +67,20 @@ pub fn delete(id: Uuid, posts: &mut Vec<Post>) {
 #[cfg(test)]
 mod test {
     use crate::oop::author::Author;
-    use crate::util::*;
     use crate::util::oop::create_authors;
+    use crate::util::*;
 
     use super::*;
-    
+
     const AUTHOR_AMOUNT: usize = 50;
     const POST_AMOUNT: usize = 100;
 
     #[test]
     fn test_new_post() {
-        let author = Author::new(String::from("Author 1"), String::from("I am the bio for author 1"));
+        let author = Author::new(
+            String::from("Author 1"),
+            String::from("I am the bio for author 1"),
+        );
         let title = String::from("Test Post");
         let body = String::from("Hello World");
         let post = Post::new(title.clone(), body.clone(), &author);
@@ -93,7 +105,10 @@ mod test {
         let authors = oop::create_authors(AUTHOR_AMOUNT);
         let posts = oop::create_posts(POST_AMOUNT, &authors);
         let expected_title = posts[50].title.clone();
-        let actual_title = find_post_by_title(expected_title.clone(), &posts).unwrap().title.clone();
+        let actual_title = find_post_by_title(expected_title.clone(), &posts)
+            .unwrap()
+            .title
+            .clone();
         assert_eq!(actual_title, expected_title);
     }
 
@@ -109,19 +124,36 @@ mod test {
 
     #[test]
     fn test_update() {
-        let author = Author::new(String::from("Author 1"), String::from("I am the bio for author 1"));
-        let mut post = Post::new(String::from("Test Post"), String::from("Some post content for post"), &author);
+        let author = Author::new(
+            String::from("Author 1"),
+            String::from("I am the bio for author 1"),
+        );
+        let mut post = Post::new(
+            String::from("Test Post"),
+            String::from("Some post content for post"),
+            &author,
+        );
         let expected_title = "Test Post Updated";
         let expected_body = "Some post content for post updated";
-        post.update(expected_title.to_string().clone(), expected_body.to_string().clone());
+        post.update(
+            expected_title.to_string().clone(),
+            expected_body.to_string().clone(),
+        );
         assert_eq!(post.title.clone(), expected_title);
         assert_eq!(post.body.clone(), expected_body);
     }
 
     #[test]
     fn test_publish() {
-        let author = Author::new(String::from("Author 1"), String::from("I am the bio for author 1"));
-        let mut post = Post::new(String::from("Test Post"), String::from("Some post content for post"), &author);
+        let author = Author::new(
+            String::from("Author 1"),
+            String::from("I am the bio for author 1"),
+        );
+        let mut post = Post::new(
+            String::from("Test Post"),
+            String::from("Some post content for post"),
+            &author,
+        );
         post.publish();
         assert_eq!(post.published, true);
     }

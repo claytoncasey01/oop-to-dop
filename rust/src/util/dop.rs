@@ -22,7 +22,11 @@ pub fn create_posts(amount: usize, author_ids_len: usize) -> Posts {
     let mut author_idx: usize;
 
     for n in 0..amount {
-        author_idx = if author_ids_len <= 1 { 0 } else { rng.gen_range(0..author_ids_len - 1) };
+        author_idx = if author_ids_len <= 1 {
+            0
+        } else {
+            rng.gen_range(0..author_ids_len - 1)
+        };
         posts.ids.push(Uuid::new_v4());
         posts.titles.push(format!("Post #{}", n));
         posts.bodies.push(format!("Body for post #{}", n));
@@ -32,7 +36,11 @@ pub fn create_posts(amount: usize, author_ids_len: usize) -> Posts {
     posts
 }
 
-pub fn create_posts_deterministic(amount: usize, posts_per_author: usize, author_ids_len: usize) -> Posts {
+pub fn create_posts_deterministic(
+    amount: usize,
+    posts_per_author: usize,
+    author_ids_len: usize,
+) -> Posts {
     let mut posts = Posts::new(amount);
     let mut author_idx: usize;
 

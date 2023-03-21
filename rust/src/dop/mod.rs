@@ -1,2 +1,2 @@
-pub mod posts;
 pub mod authors;
+pub mod posts;
