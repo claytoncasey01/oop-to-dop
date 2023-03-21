@@ -1,5 +1,5 @@
-use criterion::{black_box, Criterion, criterion_group, criterion_main};
-use rust_oop_to_dop::dop::posts::{Posts, PostUpdate};
+use criterion::{black_box, criterion_group, criterion_main, Criterion};
+use rust_oop_to_dop::dop::posts::{PostUpdate, Posts};
 use rust_oop_to_dop::util::dop;
 
 const AUTHOR_AMOUNT: usize = 100;
@@ -32,7 +32,7 @@ fn find_by_title_bench(c: &mut Criterion) {
     let title = String::from("Post #40");
 
     c.bench_function("dop_find_by_title", |b| {
-        b.iter(|| Posts::find_by_title(black_box(title.clone()), black_box(&posts.titles)));
+        b.iter(|| Posts::find_by_title(black_box(title.as_str()), black_box(&posts.titles)));
     });
 }
 
@@ -42,15 +42,24 @@ fn find_by_author_name_bench(c: &mut Criterion) {
     let author_name = String::from("Author #10");
 
     c.bench_function("dop_find_by_author_name", |b| {
-        b.iter(|| Posts::find_by_author_name(black_box(author_name.clone()), black_box(&authors.names), black_box(&posts.author_idxs)));
+        b.iter(|| {
+            Posts::find_by_author_name(
+                black_box(author_name.as_str()),
+                black_box(&authors.names),
+                black_box(&posts.author_idxs),
+            )
+        });
     });
 }
 
 fn update_bench(c: &mut Criterion) {
     let authors = dop::create_authors(AUTHOR_AMOUNT);
     let mut posts = dop::create_posts(POST_AMOUNT, authors.ids.len());
-    let post_update = &PostUpdate { id: posts.ids[50], title: Some(String::from("Update Title")), body: Some(String::from("Update Body")) };
-
+    let post_update = &PostUpdate {
+        id: posts.ids[50],
+        title: Some(String::from("Update Title")),
+        body: Some(String::from("Update Body")),
+    };
 
     c.bench_function("dop_update", |b| {
         b.iter(|| posts.update(black_box(post_update)));
@@ -58,11 +67,17 @@ fn update_bench(c: &mut Criterion) {
 }
 
 fn publish_bench(c: &mut Criterion) {
-   let authors = dop::create_authors(AUTHOR_AMOUNT);
+    let authors = dop::create_authors(AUTHOR_AMOUNT);
     let mut posts = dop::create_posts(POST_AMOUNT, authors.ids.len());
 
     c.bench_function("dop_publish", |b| {
-        b.iter(|| Posts::publish(black_box(posts.ids[50]), black_box(&posts.ids), black_box(&mut posts.published)));
+        b.iter(|| {
+            Posts::publish(
+                black_box(posts.ids[50]),
+                black_box(&posts.ids),
+                black_box(&mut posts.published),
+            )
+        });
     });
 }
 
@@ -76,5 +91,14 @@ fn delete_bench(c: &mut Criterion) {
     });
 }
 
-criterion_group!(benches, add_bench, find_by_id_bench, find_by_title_bench, find_by_author_name_bench, update_bench, publish_bench, delete_bench);
+criterion_group!(
+    benches,
+    add_bench,
+    find_by_id_bench,
+    find_by_title_bench,
+    find_by_author_name_bench,
+    update_bench,
+    publish_bench,
+    delete_bench
+);
 criterion_main!(benches);

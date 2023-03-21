@@ -1,7 +1,9 @@
-use criterion::{black_box, Criterion, criterion_group, criterion_main};
+use criterion::{black_box, criterion_group, criterion_main, Criterion};
 
 use rust_oop_to_dop::oop::author::Author;
-use rust_oop_to_dop::oop::post::{delete, find_post_by_id, find_post_by_title, find_posts_by_author_name, Post};
+use rust_oop_to_dop::oop::post::{
+    delete, find_post_by_id, find_post_by_title, find_posts_by_author_name, Post,
+};
 use rust_oop_to_dop::util::oop;
 
 const AUTHOR_AMOUNT: usize = 100;
@@ -15,7 +17,13 @@ fn new_post_bench(c: &mut Criterion) {
     let author = Author::new(author_name, author_bio);
 
     c.bench_function("oop_new_post", |b| {
-        b.iter(|| Post::new(black_box(post_title.clone()), black_box(post_body.clone()), black_box(&author)));
+        b.iter(|| {
+            Post::new(
+                black_box(post_title.clone()),
+                black_box(post_body.clone()),
+                black_box(&author),
+            )
+        });
     });
 }
 
@@ -51,18 +59,31 @@ fn find_by_author_name_bench(c: &mut Criterion) {
 
 fn update_bench(c: &mut Criterion) {
     let author = Author::new(String::from("Author #1"), String::from("Bio for author #1"));
-    let mut post = Post::new(String::from("Post #1"), String::from("Body for post #1"), &author);
+    let mut post = Post::new(
+        String::from("Post #1"),
+        String::from("Body for post #1"),
+        &author,
+    );
     let updated_title = String::from("Updated Title");
     let updated_body = String::from("Updated Body");
 
     c.bench_function("oop_update", |b| {
-        b.iter(|| post.update(black_box(updated_title.clone()), black_box(updated_body.clone())));
+        b.iter(|| {
+            post.update(
+                black_box(updated_title.clone()),
+                black_box(updated_body.clone()),
+            )
+        });
     });
 }
 
 fn publish_bench(c: &mut Criterion) {
     let author = Author::new(String::from("Author #1"), String::from("Bio for author #1"));
-    let mut post = Post::new(String::from("Post #1"), String::from("Body for post #1"), &author);
+    let mut post = Post::new(
+        String::from("Post #1"),
+        String::from("Body for post #1"),
+        &author,
+    );
 
     c.bench_function("oop_publish", |b| {
         b.iter(|| post.publish());
@@ -84,10 +105,25 @@ fn add_bench(c: &mut Criterion) {
     let mut posts = oop::create_posts(POST_AMOUNT, &authors);
 
     c.bench_function("oop_add", |b| {
-        b.iter(|| posts.push(Post::new(String::from("New Post"), String::from("New Post Body"), &authors[0])));
+        b.iter(|| {
+            posts.push(Post::new(
+                String::from("New Post"),
+                String::from("New Post Body"),
+                &authors[0],
+            ))
+        });
     });
 }
 
-criterion_group!(benches, new_post_bench, find_by_id_bench, find_by_title_bench,
-    find_by_author_name_bench, update_bench, publish_bench, delete_bench, add_bench);
+criterion_group!(
+    benches,
+    new_post_bench,
+    find_by_id_bench,
+    find_by_title_bench,
+    find_by_author_name_bench,
+    update_bench,
+    publish_bench,
+    delete_bench,
+    add_bench
+);
 criterion_main!(benches);
