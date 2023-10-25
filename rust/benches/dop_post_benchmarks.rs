@@ -19,10 +19,10 @@ fn add_bench(c: &mut Criterion) {
 fn find_by_id_bench(c: &mut Criterion) {
     let authors = dop::create_authors(AUTHOR_AMOUNT);
     let posts = dop::create_posts(POST_AMOUNT, authors.ids.len());
-    let post_id = posts.ids[posts.ids.len() / 2].clone();
+    let post_id = posts.data[posts.data.len() / 2].id.clone();
 
     c.bench_function("dop_find_by_id", |b| {
-        b.iter(|| Posts::find_by_id(black_box(post_id), black_box(&posts.ids)));
+        b.iter(|| posts.find_by_id(black_box(post_id)));
     });
 }
 
@@ -32,7 +32,7 @@ fn find_by_title_bench(c: &mut Criterion) {
     let title = String::from("Post #40");
 
     c.bench_function("dop_find_by_title", |b| {
-        b.iter(|| Posts::find_by_title(black_box(title.as_str()), black_box(&posts.titles)));
+        b.iter(|| posts.find_by_title(black_box(title.as_str())));
     });
 }
 
@@ -56,7 +56,7 @@ fn update_bench(c: &mut Criterion) {
     let authors = dop::create_authors(AUTHOR_AMOUNT);
     let mut posts = dop::create_posts(POST_AMOUNT, authors.ids.len());
     let post_update = &PostUpdate {
-        id: posts.ids[50],
+        id: posts.data[50].id,
         title: Some(String::from("Update Title")),
         body: Some(String::from("Update Body")),
     };
@@ -71,20 +71,14 @@ fn publish_bench(c: &mut Criterion) {
     let mut posts = dop::create_posts(POST_AMOUNT, authors.ids.len());
 
     c.bench_function("dop_publish", |b| {
-        b.iter(|| {
-            Posts::publish(
-                black_box(posts.ids[50]),
-                black_box(&posts.ids),
-                black_box(&mut posts.published),
-            )
-        });
+        b.iter(|| posts.publish(black_box(posts.data[50].id)));
     });
 }
 
 fn delete_bench(c: &mut Criterion) {
     let authors = dop::create_authors(AUTHOR_AMOUNT);
     let mut posts = dop::create_posts(POST_AMOUNT, authors.ids.len());
-    let post_to_delete = posts.ids[100].clone();
+    let post_to_delete = posts.data[100].id.clone();
 
     c.bench_function("dop_delete", |b| {
         b.iter(|| posts.delete(black_box(post_to_delete)));

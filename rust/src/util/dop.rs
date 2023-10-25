@@ -27,10 +27,12 @@ pub fn create_posts(amount: usize, author_ids_len: usize) -> Posts {
         } else {
             rng.gen_range(0..author_ids_len - 1)
         };
-        posts.ids.push(Uuid::new_v4());
-        posts.titles.push(format!("Post #{}", n));
-        posts.bodies.push(format!("Body for post #{}", n));
-        posts.author_idxs.push(author_idx);
+
+        posts.add(
+            format!("Post #{}", n),
+            format!("Body for post #{}", n),
+            author_idx,
+        );
     }
 
     posts
@@ -48,10 +50,11 @@ pub fn create_posts_deterministic(
         author_idx = n / posts_per_author;
 
         if author_idx < author_ids_len {
-            posts.ids.push(Uuid::new_v4());
-            posts.titles.push(format!("Post #{}", n));
-            posts.bodies.push(format!("Body for post #{}", n));
-            posts.author_idxs.push(author_idx);
+            posts.add(
+                format!("Post #{}", n),
+                format!("Body for post #{}", n),
+                author_idx,
+            );
         }
     }
 
