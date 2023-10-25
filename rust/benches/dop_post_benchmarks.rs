@@ -8,11 +8,14 @@ const POST_AMOUNT: usize = 10000;
 fn add_bench(c: &mut Criterion) {
     let authors = dop::create_authors(AUTHOR_AMOUNT);
     let mut posts = dop::create_posts(POST_AMOUNT, authors.ids.len());
-    let title = String::from("New Post");
-    let body = String::from("New post body");
-
     c.bench_function("dop_add", |b| {
-        b.iter(|| posts.add(black_box(title.clone()), black_box(body.clone()), 0));
+        b.iter(|| {
+            posts.add(
+                black_box(String::from("New Post")),
+                black_box(String::from("New post body")),
+                0,
+            )
+        });
     });
 }
 
